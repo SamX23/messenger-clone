@@ -10,7 +10,9 @@ import {
 
 export default function Chat() {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    { username: "Anonym", text: "Hello" },
+  ]);
   const [username, setUsername] = useState("");
 
   useEffect(() => {
@@ -19,7 +21,7 @@ export default function Chat() {
 
   const sendMessage = (e) => {
     e.preventDefault();
-    setMessages([...messages, input]);
+    setMessages([...messages, { username: username, text: input }]);
     setInput("");
   };
 
@@ -29,22 +31,24 @@ export default function Chat() {
         {username}
       </Typography>
 
-      {messages.map((message, key) => (
-        <Message key={key} text={message} />
-      ))}
-
-      <FormControl>
-        <InputLabel>Enter a message..</InputLabel>
-        <Input value={input} onChange={(e) => setInput(e.target.value)} />
-        <Button
-          variant="contained"
-          type="submit"
-          onClick={sendMessage}
-          disabled={!input}
-        >
-          Send
-        </Button>
-      </FormControl>
+      {messages &&
+        messages.map((message, key) => (
+          <Message key={key} username={username} message={message} />
+        ))}
+      <form>
+        <FormControl>
+          <InputLabel>Enter a message..</InputLabel>
+          <Input value={input} onChange={(e) => setInput(e.target.value)} />
+          <Button
+            variant="contained"
+            type="submit"
+            onClick={sendMessage}
+            disabled={!input}
+          >
+            Send
+          </Button>
+        </FormControl>
+      </form>
     </div>
   );
 }
