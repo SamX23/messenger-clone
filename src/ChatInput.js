@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import db from "./firebase";
 import firebase from "firebase";
-
-import { Button, FormControl, Input, InputLabel } from "@material-ui/core";
+import SendIcon from "@material-ui/icons/Send";
+import { IconButton, FormControl, Input } from "@material-ui/core";
 
 const ChatInput = ({ username }) => {
   const [input, setInput] = useState("");
@@ -18,18 +18,24 @@ const ChatInput = ({ username }) => {
   };
 
   return (
-    <form>
-      <FormControl>
-        <InputLabel>Enter a message..</InputLabel>
-        <Input value={input} onChange={(e) => setInput(e.target.value)} />
-        <Button
+    <form className="app__form">
+      <FormControl className="app__formControl">
+        <Input
+          className="app__input"
+          placeholder="Enter a message..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+        />
+
+        <IconButton
+          className="app__iconButton"
           variant="contained"
           type="submit"
           onClick={sendMessage}
           disabled={!input}
         >
-          Send
-        </Button>
+          <SendIcon />
+        </IconButton>
       </FormControl>
     </form>
   );
