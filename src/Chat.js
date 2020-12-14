@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from "react";
+import ChatHeader from "./ChatHeader";
 import Message from "./Message";
+import ChatInput from "./ChatInput";
 import db from "./firebase";
-import firebase from "firebase";
 import FlipMove from "react-flip-move";
-import {
-  Typography,
-  Button,
-  FormControl,
-  Input,
-  InputLabel,
-} from "@material-ui/core";
 
 export default function Chat() {
-  const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
 
@@ -27,21 +20,11 @@ export default function Chat() {
     setUsername(prompt("Enter your name .."));
   }, []);
 
-  const sendMessage = (e) => {
-    e.preventDefault();
-    db.collection("messages").add({
-      message: input,
-      username: username,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-    });
-    setInput("");
-  };
-
   return (
     <div>
-      <Typography variant="h1" component="h1">
-        {username}
-      </Typography>
+      <ChatHeader username={username} />
+
+      <ChatInput username={username} />
 
       <FlipMove>
         {messages &&
@@ -49,21 +32,6 @@ export default function Chat() {
             <Message key={id} username={username} message={message} />
           ))}
       </FlipMove>
-
-      <form>
-        <FormControl>
-          <InputLabel>Enter a message..</InputLabel>
-          <Input value={input} onChange={(e) => setInput(e.target.value)} />
-          <Button
-            variant="contained"
-            type="submit"
-            onClick={sendMessage}
-            disabled={!input}
-          >
-            Send
-          </Button>
-        </FormControl>
-      </form>
     </div>
   );
 }
