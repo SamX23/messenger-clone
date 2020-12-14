@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Message from "./Message";
+import db from "./firebase";
+import firebase from "firebase";
 import {
   Typography,
   Button,
@@ -10,18 +12,25 @@ import {
 
 export default function Chat() {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([
-    { username: "Anonym", text: "Hello" },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [username, setUsername] = useState("");
 
   useEffect(() => {
+    db.collection("messages")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) =>
+        setMessages(snapshot.docs.map((doc) => doc.data()))
+      );
     setUsername(prompt("Enter your name .."));
   }, []);
 
   const sendMessage = (e) => {
     e.preventDefault();
-    setMessages([...messages, { username: username, text: input }]);
+    db.collection("messages").add({
+      message: input,
+      username: username,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
     setInput("");
   };
 
