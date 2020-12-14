@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Message from "./Message";
 import db from "./firebase";
 import firebase from "firebase";
+import FlipMove from "react-flip-move";
 import {
   Typography,
   Button,
@@ -19,7 +20,9 @@ export default function Chat() {
     db.collection("messages")
       .orderBy("timestamp", "desc")
       .onSnapshot((snapshot) =>
-        setMessages(snapshot.docs.map((doc) => doc.data()))
+        setMessages(
+          snapshot.docs.map((doc) => ({ id: doc.id, message: doc.data() }))
+        )
       );
     setUsername(prompt("Enter your name .."));
   }, []);
@@ -40,10 +43,13 @@ export default function Chat() {
         {username}
       </Typography>
 
-      {messages &&
-        messages.map((message, key) => (
-          <Message key={key} username={username} message={message} />
-        ))}
+      <FlipMove>
+        {messages &&
+          messages.map(({ id, message }) => (
+            <Message key={id} username={username} message={message} />
+          ))}
+      </FlipMove>
+
       <form>
         <FormControl>
           <InputLabel>Enter a message..</InputLabel>
